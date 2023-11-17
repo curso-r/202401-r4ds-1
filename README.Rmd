@@ -1,8 +1,8 @@
 ---
 output: github_document
 params:
-  turma: 202102-intro-programacao
-  nome_curso: ATUALIZANDO....
+  turma: 202401-r4ds-1
+  nome_curso: R para Ciência de Dados I
   download_material: 'TRUE'
 ---
 
