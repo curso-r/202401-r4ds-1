@@ -4,7 +4,7 @@
 ## Informações importantes
 
 - [Clique
-  aqui](https://github.com/curso-r/202401-r4ds-1/archive/refs/heads/main.zip)
+  aqui](https://github.com/curso-r/main-r4ds-1/raw/master/material_do_curso.zip)
   para baixar o material do curso.
 
 - Nosso blog: <https://curso-r.com/blog/>

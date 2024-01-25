@@ -2,4 +2,4 @@ theme: jekyll-theme-minimal
 logo: assets/logo.png
 title: R para Ciência de Dados I
 show_downloads: true
-link_material: 'https://github.com/curso-r/202401-r4ds-1/archive/refs/heads/main.zip'
+link_material: 'https://github.com/curso-r/main-r4ds-1/raw/master/material_do_curso.zip'
