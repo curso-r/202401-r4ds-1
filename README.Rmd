@@ -57,7 +57,7 @@ Fora do horário de aula ou monitoria:
 
 ```{r}
 "slides/" |>
-  fs::dir_ls(glob = "*.html", fail = FALSE) |>
+  fs::dir_ls(glob = "*.html|*.pdf", fail = FALSE) |>
   path_to_url() |>
   dplyr::select(Slide = url) |>
   knitr::kable()
@@ -67,23 +67,14 @@ Fora do horário de aula ou monitoria:
 ## Scripts utilizados em aula
 
 ```{r}
-"exemplos_de_aula/" |>
-  fs::dir_ls(fail = FALSE) |>
-  path_to_url() |>
-  dplyr::select(Exemplo = url) |>
-  knitr::kable()
-```
-## Práticas
-
-```{r}
-"praticas/" |>
+"scripts/" |>
   fs::dir_ls(fail = FALSE) |>
   path_to_url() |>
   dplyr::select(Exemplo = url) |>
   knitr::kable()
 ```
 
-## Lição de casa
+## Exercícios
 
 ```{r}
 "exercicios/" |>
