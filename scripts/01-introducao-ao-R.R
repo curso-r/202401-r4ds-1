@@ -101,27 +101,54 @@ View(mtcars)
 
 # Continuar na aula que vem! ------
 
+# R como uma calculadora!
+
+# Objetos - são como variáveis que armazenam valores
+
+# Funções  - ex: soma, média
+
+# Buscar ajuda - ?nome_funcao, ou help(funcao)
+
+# Classe do objeto - textos, números
+
+# tabelas, ver número de linhas e colunas!
+
+# não lembro muito bem mas tinha uma coisa do primeiro item ser
+# a posição de algo
+
+# vetores
 
 
-
-
-
-# E o view com v minúsculo? só com o tidyverse carregado
-
-View(mtcars) # R base
-view(mtcars) # tidyverse
-
+# ------- 
 # Uma função pode ter mais de um argumento
 # Argumentos são sempre separados por vírgulas
 
 sum(1, 2)
 sum(2, 3, 4)
 
+# conseguimos somar valores em uma base de dados
+mtcars$mpg
+sum(mtcars$mpg)
+mtcars$mpg # acessando os valores de uma coluna, na forma de vetor
+
+# Exemplo do round
+
+help(round)
+
+round(1.3453456234)
+
 round(1.3453456234, digits = 2) 
 
 round(1.3453456234, 2)
 
+# isso vai dar errado!
+round(2, 1.3453456234)
+
+# fins didáticos!
+round(digits = 2, 1.3453456234)
+
 # usar o ponto para separador decimal dentro do R.
+
 
 # Existem funções para ler bases de dados
 
@@ -134,6 +161,10 @@ read.csv("dados/imdb.csv")
 
 imdb <- read.csv("dados/imdb.csv")
 
+# "dados/imdb.csv"
+
+# imdb_v2 <- read.csv("~/Desktop/material_do_curso_rds1/dados/imdb.csv")
+# rm(imdb_v2)
 # Criando objetos ---------------------------------------------------------
 
 # No dia-a-dia, a gente vai precisar criar os 
@@ -149,7 +180,7 @@ obj
 soma <- 2 + 2
 soma
 
-# ATALHO para a <- : ALT - (alt menos)
+# ATALHO para a <- : ALT - (alt menos). No mac: option menos
 
 # Em geral, começaremos a nossa análise com:
 nossa_base <- funcao_que_carrega_uma_base("caminho/ate/arquivo")
@@ -167,20 +198,23 @@ nossa_base
 # No nosso caso:
 imdb <- read.csv("dados/imdb.csv")
 
+
+# ---
+
 # salvar saída versus apenas executar
 33 / 11
 resultado <- 33 / 11
 
 # atualizar um objeto
-resultado <- resultado * 5
+# resultado <- resultado * 5
 # tomar cuidado com salvar coisas em objetos com o mesmo nome!
+
+resultado_multiplicado <- resultado * 5
 
 # A nossa base imdb só será alterada quando salvarmos
 # uma operação em cima do objeto imdb
 
 na.exclude(imdb)
-
-
 
 imdb_sem_na <- na.exclude(imdb)
 
@@ -223,6 +257,7 @@ E_algumasPoucas.Pessoas_RENUNCIAMconvenções #
 
 imdb <- read.csv("dados/imdb.csv")
 
+imdb <- read.csv("dados/imdb.csv")
 
 
 # Classes -----------------------------------------------------------------
@@ -231,6 +266,10 @@ imdb
 
 # Cada coluna da base representa uma variável
 # Cada variável pode ser de um tipo (classe) diferente
+
+
+# Cada vetor só pode ser de uma única classe
+
 
 # Podemos somar dois números
 1 + 2
@@ -255,7 +294,7 @@ a
 a <- 10
 class(a)
 
-# Caracteres (character, strings)
+# Caracteres (character, strings) - textos!
 
 obj <- "a"
 obj2 <- "masculino"
@@ -285,6 +324,8 @@ class(imdb$nota_imdb)
 # Como acessar as colunas de uma base?
 imdb$data_lancamento
 
+Sys.Date()
+
 # Como vemos a classe de uma coluna?
 class(imdb$data_lancamento)
 
@@ -292,9 +333,14 @@ class(imdb$data_lancamento)
 
 # Vetores -----------------------------------------------------------------
 
+imdb$ano
+
+
 # Vetores são conjuntos de valores: use a função c()
 
 vetor1 <- c(1, 4, 3, 10)
+
+
 vetor2 <- c("a", "b", "z")
 
 
@@ -354,6 +400,9 @@ as.character(c(TRUE, FALSE, FALSE))
 
 vetor <- c(0, 5, 20, -3)
 
+outro_vetor <- c(1, 1, 1, 1)
+
+vetor + outro_vetor
 vetor + 1
 vetor - 1
 vetor / 2
@@ -370,8 +419,8 @@ vetor1 + vetor2
 
 # Para instalar pacotes
 
-install.packages("tidyverse") # busca no CRAN
-
+# install.packages("tidyverse") # busca no CRAN
+# isso pode demorar!
 
 starwars
 
@@ -382,6 +431,14 @@ library(dplyr)
 dplyr::filter_at()
 dplyr::transmute()
 
+stringr::
+
 # aproveite o auto complete
 
 dplyr::filter()
+
+# E o view com v minúsculo? só com o tidyverse carregado
+
+View(mtcars) # R base
+view(mtcars) # tidyverse
+
