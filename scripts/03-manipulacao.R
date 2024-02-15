@@ -1,235 +1,200 @@
+# Aula 3 ------------------------------------------------------------------
+
+
 # Pacotes -----------------------------------------------------------------
+
 library(tidyverse)
 
-# Base de dados -----------------------------------------------------------
 
-imdb <- read_rds("dados/imdb.rds")
+# Importação de dados -----------------------------------------------------
 
-# Jeito de ver a base -----------------------------------------------------
+imdb <- read_csv("https://raw.githubusercontent.com/curso-r/main-r4ds-1/master/dados/imdb.csv")
 
+# Jeitos de dar uma olhada na base ----------------------------------------
 
-
-# R base
 names(imdb)
-View(imdb) # Cuidado com bases muito grandes!
-head(imdb, n = 10)
-tail(imdb, n = 10)
+head(imdb, 10)
+tail(imdb, 10)
 
-# tidyverse
 glimpse(imdb)
-slice_sample(imdb, n = 1000)
 
-# SKIM - relatório da base
-skimr::skim(imdb)
+# install.packages("skimr")
+library(skimr)
 
-# DICA: padronizar nomes das colunas
+skim(imdb)
+# dá um resuminho de como a base é!
 
-iris
+# Manipulações ------------------------------------------------------------
 
-names(iris)
+# pacote dplyr, que mora no tidyverse
 
-iris_limpo <- janitor::clean_names(iris)
+# muitas coisas que a gente quer fazer com uma tabela
+# dá pra fazer misturando 6 em alguma ordem 6 verbos:
 
-names(iris_limpo)
+# select - SELECIONAR coluna
+# filter - FILTRAR (manter ou remover) linhas
+# arrange - ORDERNAR as linhas de acordo com colunas
+# mutate - CRIAR colunas novas (a partir de pré existentes ou não)
+# summarize - SUMARIZAR a tabela em um resumo menor (transformar as 28k linhas em uma média, ou variancia ou maximo, minimo etc)
+# join_ - UNIR duas tabelas de acordo com uma chave (PROCV!)
 
-# dplyr: 6 verbos principais
-# select()    # seleciona colunas do data.frame
-# arrange()   # reordena as linhas do data.frame
-# filter()    # filtra linhas do data.frame
-# mutate()    # cria novas colunas no data.frame (ou atualiza as colunas existentes)
-# summarise() + group_by() # sumariza o data.frame
-# left_join   # junta dois data.frames
+####### EXEMPLO CONCEITUAL
+
+# Desejo: a partir da tabela IMDB eu quero chegar em uma tabela que
+# tem a média de nota no imdb dos filmes que saíram depois de 2000.
+
+# Existe uma sequência de passos usando os 6 verbos que chega nisso:
+
+# 1. PEGUE a base IMDB
+# 2. FILTRE apenas aquelas linhas em que a coluna ano é >= 2000
+# 3. SUMARIZE o resultado de 2. extraindo a média da coluna nota_imdb.
+
+# agora teria um terceiro passo...
+
+# que é transformar esse "esquema" passo-a-passo em um código em R
+# vamos aprender nas próximas aulas!
+
+# vamos começar com sequências de aplicações de verbo que tem 1 passo só
 
 # select ------------------------------------------------------------------
 
-# Selecionando uma coluna da base
+# pedido: a tabela imdb é muito grande... quero ver uma versão dela
+# que só tenha o nome, o ano e o a nota no imdb
 
+# pra isso serve o select!!!
 
-select(imdb, id_filme) # retorna uma base de dados!
+# 1. pegue o IMDB
+# 2. SELECIONE apenas as colunas "nome do filme", "ano" e "nota no imdb"
 
-# imdb$id_filme # retorna vetor
+# agora em R:
 
 select(imdb, titulo)
+# começando só pelo título
+# o resultado ainda é uma tabela!
 
-# A operação NÃO MODIFICA O OBJETO imdb
+imdb_nota_ano <- select(imdb, titulo, ano, nota_imdb)
+# posso guardar num objeto!
 
-imdb
+imdb_nota_ano_direcao <- select(imdb, titulo, ano, nota_imdb, direcao)
 
-# para modificar, precisa usar <- e salvar em um objeto!
-imdb_titulos <- select(imdb, titulo)
+View(imdb_nota_ano_direcao)
 
+select(imdb, data_lancamento, ano, titulo, direcao)
 
+select(imdb, titulo:duracao)
+# no excel A1:D1
+# no R
+1:10
 
+select(imdb, num_avaliacoes, num_criticas_publico, num_criticas_critica)
+# explícito
 
+select(imdb, starts_with("num"))
+# resumido
 
-# Selecionando várias colunas
+select(imdb, ends_with("cao"))
+# resumido
 
-select(imdb, titulo, ano, orcamento) # respeita a ordem
+select(imdb, contains("critica"))
 
-select(imdb, orcamento, ano, titulo) # respeita a ordem
+# tem funções principais que a gente pode colocar dentro do select
+# (normalmente a gente usa dentro do select só nome de coluna
+# da tabela OU essas funções (que no fim viram colunas tb))
 
-1:10 # sequencia
+# starts_with("padrão")
+# ends_with("padrão")
+# contains("padrão")
 
-select(imdb, titulo:generos)
+#IMPORTANTE!
 
-# Funções auxiliares - detectar padroes de texto no nome das colunas!
+# o select precisa começar sempre por uma tabela:
+# select(TABELA, colunas/funções)
+# TABELA no nosso caso é IMDB
 
-select(imdb, starts_with("num")) # nome da coluna começa com o texto ....
+minha_tabela <- select(imdb, titulo, direcao, nota_imdb, contains("num"))
+# podemos misturar!
 
-select(imdb, ends_with("cao")) # nome da coluna termina com o texto ...
+View(minha_tabela)
 
-select(imdb, contains("cri")) # nome da coluna contém o texto ...
+# o select também remove!
 
+imdb_sem_titulo <- select(imdb, -titulo)
 
+imdb_sem_num <- select(imdb, -contains("num"))
 
-# Principais funções auxiliares
-
-# starts_with(): para colunas que começam com um texto padrão
-# ends_with(): para colunas que terminam com um texto padrão
-# contains():  para colunas que contêm um texto padrão
-
-# Selecionando colunas por exclusão
-
-select(imdb, -titulo)
-
-select(imdb, -starts_with("num"), -titulo, -ends_with("ao"))
-
-# Treinando esse conceito
-
-# combinar regras
-select(imdb, titulo, starts_with("num"), orcamento:receita_eua)
-
-# sequencia de colunas com :
-select(imdb, id_filme:num_avaliacoes)
-
-# salvar o resultado do select em um objeto
-imdb_selecionado <- select(imdb, titulo, ano, generos)
-
+# o - só funciona desse jeito no SELECT
+# nem nos outros 6 comandos nem nos outros comandos do R em geral
+# é garantido que - vai funcionar. às vezes vai, mas não sempre
 
 # arrange -----------------------------------------------------------------
 
+minha_tabela
 
-# nome_verbo(nome_base, regras)
+arrange(minha_tabela, nota_imdb)
 
-# Ordenando linhas de forma crescente de acordo com
-# os valores de uma coluna
+arrange(minha_tabela, -nota_imdb)
+# aqui "inverte"
 
-# por padrao é ordenacao crescente
-View(arrange(imdb, orcamento))
+# pedido: quais são os 10 filmes pior avaliados?
 
-# Agora de forma decrescente
-View(arrange(imdb, desc(orcamento)))
+# 1. pegue a tabela IMDB
+# 2. ORDENE pena nota_imdb
+# 3. SELECIONE apenas a coluna titulo
+# 4. pegue as 10 primeiras linhas de 3. (aqui não é do dplyr, mas temos a função head)
 
-# só vai mudar a ordem no objeto se salvar, com a <-
-imdb_ordenado <- arrange(imdb, desc(orcamento))
+imdb_ordenado <- arrange(imdb, nota_imdb)
+imdb_ordenado_titulos <- select(imdb_ordenado, titulo, nota_imdb)
+head(imdb_ordenado_titulos, 10)
 
-# ordem das colunas que usamos no arrange importa!
-View(arrange(imdb, desc(ano), desc(nota_imdb)))
-# ano e desempate pela nota
+# pedidos: 10 filmes MELHOR avaliados??
 
-
-
-# nota, desempate pelo ano
-View(arrange(imdb, desc(nota_imdb), desc(ano)))
-
-# por padrao, ordenacao por texto será em ordem alfabetica
-View(arrange(imdb, direcao))
-
-# Ordenando de acordo com os valores
-# de duas colunas
-
-View(arrange(imdb, desc(ano), orcamento))
-
-# O que acontece com o NA? Sempre fica no final!
-
-df <- tibble(x = c(NA, 2, 1), y = c(1, 2, 3))
-
-arrange(df, x)
-arrange(df, desc(x))
-
-# ---------
-
-# FORMAS PARA CRIAR UMA TABELA
-# COM AS COLUNAS TITULO E NOTA,
-# COM AS NOTAS DECRESCENTES
-
-# FORMA 1
-imdb_notas <- select(imdb, titulo, nota_imdb)
-
-arrange(imdb_notas, desc(nota_imdb))
-
-# FORMA 2
-# CODIGO ANINHADO - NÃO É LEGAL
-# dificil de ler
-arrange(select(imdb, titulo, nota_imdb), desc(nota_imdb))
-
-# PIPE ---------------------
-# forma 3
-# forma mais usada
-# pipe - cano
-# conecta as operações
-# é um operador
-# tidyverse %>%
-# R base |>
-
-imdb |>
-  select(titulo, nota_imdb)
-
-# select(imdb, titulo, nota_imdb)
-
-# salvar em um objeto
-imdb_pipe <- imdb |> # usando a base do IMDB
-  # quero selecionar as colunas titulo e nota
-  select(titulo, nota_imdb) |>
-  # ordenar de forma decrescente pela nota
-  arrange(desc(nota_imdb))
-
-# ATALHO DO |>: CTRL (command) + SHIFT + M
+imdb_ordenado <- arrange(imdb, -nota_imdb)
+imdb_ordenado_titulos <- select(imdb_ordenado, titulo, nota_imdb)
+head(imdb_ordenado_titulos, 10)
 
 
-# pipe nativo - Atalho: CTRL SHIFT M
-imdb |>
-  select(titulo, ano, nota_imdb, num_avaliacoes) |>
-  arrange(desc(nota_imdb))
+# o que pode dar errado até aqui? -----------------------------------------
 
-# pipe do tidyverse - Atalho: CTRL SHIFT M
-imdb %>%
-  select(titulo, ano, nota_imdb, num_avaliacoes) %>%
-  arrange(desc(nota_imdb))
+# no select podemos escrever nomes de colunas que não existem:
 
+select(imdb, titlo)
+# erro de que coluna não existe!
+# o correto seria
+select(imdb, titulo)
 
+# um erro mais zuado
 
-# PREPARATORIO PRO FILTER: DISTINCT -----------
-# olhar as categorias de uma variável:
+select(imbd, titulo)
+# erro que me diz que ele não achou uma tabela
+# que se chama imbd
 
-# Retorna uma tabela
+select(imdb, "titulo")
+# isso não é erro! funciona...
 
-distinct(imdb, direcao) # deixa apenas valores unicos!
-distinct(imdb, ano, idioma) |>
-  arrange(ano) |>
-  View()
+# erros:
 
+select(imdb, titulo ano)
+# esquecer de colocar vírgula
+# o bom é que fica com o X do lado ^
 
-imdb |>
-  distinct(direcao)
+select(imdb, Titulo)
+# o R diferencia maiúsculas e minúsculas!
+# tem que tomar cuidado
 
-# Retorna um vetor
-unique(imdb$direcao)
+# esquecer de salvar/rodar causa erro:
 
+arrange(imdb, -nota_imdb)
+imdb_ordenado_titulos <- select(imdb_ordenado_nota, titulo, nota_imdb)
+# esses comandos, isoladamente, dão erro! eu não crei um objeto
+# "imdb_ordenado_nota"
+# mesmo escrevendo corretamente:
 
-# Contagem ----
+imdb_ordenado_nota <- arrange(imdb, -nota_imdb)
+imdb_ordenado_titulos <- select(imdb_ordenado_nota, titulo, nota_imdb)
 
-imdb |>
-  count(direcao)
+# tem que lembrar de rodar!!! se não lembrar já era
 
-count(imdb, direcao, ano) |> View()
-
-diretores_ordenados <- imdb |>
-  count(direcao, sort = TRUE)
-
-imdb |>
-  filter(direcao == "Quentin Tarantino") |>
-  count(producao)
+# Intervalo - Aula 4 ---------------------------------------------------------------
 
 
 # filter ------------------------------------------------------------------
