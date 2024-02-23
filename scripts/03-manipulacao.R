@@ -197,9 +197,9 @@ imdb_pipe <- imdb |> # usando a base do IMDB
 
 # Qual atalho usar? dá para mudar nas configurações
 # Tools > Global options > Code > Use native pipe operator
-# |> |> |> |> 
+# |> |> |> |>
 
-# %>% %>% %>% %>% %>% %>% 
+# %>% %>% %>% %>% %>% %>%
 
 
 # pipe nativo - Atalho: CTRL SHIFT M
@@ -241,11 +241,11 @@ unique(imdb$direcao)
 
 
 # Contagem ----
-imdb |> 
+imdb |>
   count(producao) |> View()
 
 
-imdb |> 
+imdb |>
   count(producao, sort = TRUE) |> View()
 
 imdb |>
@@ -257,7 +257,7 @@ diretores_ordenados <- imdb |>
   count(direcao, sort = TRUE)
 
 imdb |>
-  filter(direcao == "George Lucas") 
+  filter(direcao == "George Lucas")
 
 
 # Intervalo - Aula 4 ---------------------------------------------------------------
@@ -312,12 +312,12 @@ imdb |>
 
 # coisas para tomar cuidado:
 # colocar vários filtros no mesmo filter
-imdb |> 
+imdb |>
   filter(direcao == "Quentin Tarantino", nota_imdb == max(nota_imdb))
 
 # Tem casos que é melhor deixar em dois filtros!
-imdb |> 
-  filter(direcao == "Quentin Tarantino") |> 
+imdb |>
+  filter(direcao == "Quentin Tarantino") |>
   filter(nota_imdb == max(nota_imdb))
 
 
@@ -333,13 +333,13 @@ imdb |>
   View()
 
 
-imdb |> 
+imdb |>
   filter(direcao == "Quentin Tarantino", producao == "Miramax") |>
   View()
 
 
-imdb |> 
-  filter(direcao == "Quentin Tarantino") |> 
+imdb |>
+  filter(direcao == "Quentin Tarantino") |>
   filter(producao == "Miramax") |>
   View()
 
@@ -395,25 +395,25 @@ imdb |>
   View()
 
 # Mesma coisa de cima, mas como a Beatriz prefere usar
-imdb |> 
-  select(titulo, ano, nota_imdb, orcamento, receita) |> 
+imdb |>
+  select(titulo, ano, nota_imdb, orcamento, receita) |>
   mutate(lucro = receita - orcamento) |>
-  filter(lucro > 0) |> 
+  filter(lucro > 0) |>
   View()
 
 
 
 # Outra função útil: remover as linhas que tem NA
 # em determinadas colunas
-imdb |> 
+imdb |>
   drop_na(orcamento) |> View()
 
 
-imdb |> 
-  drop_na(orcamento, receita) 
+imdb |>
+  drop_na(orcamento, receita)
 
 # cuidado pois tira todas as linhas que tem QUALQUER NA!
-imdb |> 
+imdb |>
   drop_na()
 
 
@@ -432,6 +432,9 @@ imdb |>
 
 # Mostrar exemplo que está em: https://gist.github.com/jtrecenti/01b823190c24508e29c1ea763ee0e0ee
 
+
+x <- 1
+
 # operador %in%
 # o x é igual à 1
 # o x faz parte do conjunto 1, 2 e 3? SIM
@@ -442,14 +445,16 @@ x %in% c(2, 3, 4)
 # Exemplo com filtros! ISSO VAI TER QUE VOLTAR NO
 # COMEÇO DA AULA QUE VEM
 
-# Isso era pra retornar 0 linhas,  e voltou com 1. 
+# Isso era pra retornar 0 linhas,  e voltou com 1.
 # Usou a reciclagem, mas isso tá errado.
-imdb |> 
-  filter(direcao == c("Christopher Nolan", "Matt Reeves")) |> View()
+imdb |>
+  # NÃO USAR O == NO CASO DE c()
+  filter(direcao == c("Christopher Nolan", "Matt Reeves"))
 
-# para entender
-imdb$direcao == c("Christopher Nolan", "Matt Reeves")
-
+# filme 1 - nolan
+# filme 2 - reeves
+# filme 3 - nolan
+# filme 4 - reeves
 
 # O operador %in%
 
@@ -458,9 +463,10 @@ imdb |>
   View()
 
 # Permite mais opções.
-imdb |> 
+imdb |>
   filter(ano %in% c(1990, 2000, 2010, 2020)) |>
-  count(ano) |> View()
+  count(ano) |>
+  View()
 
 
 
@@ -470,6 +476,33 @@ imdb |>
   filter(
     direcao == "Matt Reeves" | direcao == "Christopher Nolan"
   )
+
+
+imdb |>
+  filter(
+    str_detect(generos, "Comedy")
+  )
+
+
+imdb |>
+  filter(
+    str_detect(generos, "Adventure") | str_detect(generos, "Animation")
+  ) |> View()
+
+
+imdb |>
+  filter(
+    str_detect(generos, "Adventure"), str_detect(generos, "Animation")
+  ) |> View()
+
+
+# E o contains não funciona?
+# Não :( contains() funciona com funções de para selecionar colunas!
+# imdb |>
+#   filter(
+#     contains("Adventure")
+#   )
+# `contains()` must be used within a *selecting* function.
 
 
 # ISSO NAO FUNCIONA
@@ -490,7 +523,6 @@ diretores_favoritos_do_will <- imdb |>
   view()
 
 
-# <-
 
 
 ## Operadores lógicos -------------------------------
@@ -525,7 +557,6 @@ imdb |>
 # lados precisa ser verdadeiro
 
 # operador |
-
 
 y <- 2
 y >= 3 # FALSO
@@ -590,9 +621,18 @@ imdb |>
 is.na("bia")
 is.na(NA)
 
+!is.na("bia")
+
+
+imdb |>
+  filter(is.na(orcamento)) |> View()
+
+
+
 imdb |>
   filter(!is.na(orcamento)) |>
   View()
+
 
 
 
@@ -601,19 +641,45 @@ imdb |>
   View()
 
 
-#
+# ----
 
-imdb |>
-  mutate(descricao_minusculo = str_to_lower(descricao)) |>
-  filter(str_detect(descricao_minusculo, "woman|hero|friend")) |>
+imdb_desc <- imdb |>
+  # criar uma coluna nova
+  # essa coluna se chamará descricao_minusculo
+  # e o que ela vai ter?
+  # o conteúdo da coluna descricao,
+  # com o texto em letras minúsculas
+  mutate(descricao_minusculo = str_to_lower(descricao))
+
+
+
+textos_desc <- imdb_desc$descricao_minusculo[1:5]
+
+str_view(textos_desc, "woman")
+
+str_detect(textos_desc, "woman")
+
+
+
+str_view(textos_desc, "woman|male")
+
+str_detect(textos_desc, "woman|male")
+
+
+str_extract(textos_desc, "woman")
+
+# nesse caso não usamos o %in%, e sim o |
+# O | é o ou.
+imdb_desc |>
+  filter(str_detect(descricao_minusculo, "woman|friend")) |>
   View()
 
-
+# nesse caso, a vírgula quer dizer E - &
 imdb |>
   mutate(descricao_minusculo = str_to_lower(descricao)) |>
   filter(
     str_detect(descricao_minusculo, "woman"),
-    str_detect(descricao_minusculo, "friend")
+   str_detect(descricao_minusculo, "friend")
   ) |>
   View()
 
@@ -631,6 +697,9 @@ imdb |>
   drop_na()
 
 # tira as linhas que tem NA nas colunas indicadas
+imdb |>
+  drop_na(orcamento)
+
 imdb |>
   drop_na(orcamento, receita)
 
@@ -656,8 +725,11 @@ filter(df, x > 1 | is.na(x))
 
 
 
-# ISSO DÁ ERRO
+# ISSO DÁ UM RESULTADO ERRADO
 filter(imdb, orcamento == NA)
+
+
+# Contar os NAs ----------------------
 
 # contar os NA quando a variavel é categórica/texto
 count(imdb, producao, sort = TRUE) |> View()
@@ -665,6 +737,12 @@ count(imdb, producao, sort = TRUE) |> View()
 # para numéricos, assim é mais fácil
 filter(imdb, is.na(orcamento)) |>
   nrow()
+
+is.na(imdb$orcamento)
+
+
+sum(is.na(imdb$orcamento))
+
 # tambem funciona para texto
 filter(imdb, is.na(producao)) |>
   nrow()
@@ -680,10 +758,12 @@ library(stringr) # faz parte do tidyverse
 
 str_detect(textos, pattern = "a")
 
-str_view_all(textos, "a")
+str_view(textos, "a")
 
 # validacao do padrao usado
-str_view_all(imdb$descricao[1:10], "woman|movie", html = TRUE)
+str_view(imdb$descricao[1:10], "woman|movie", html = TRUE)
+
+str_view(imdb$descricao[1:10], "woman|movie")
 
 
 ## Pegando os seis primeiros valores da coluna "generos"
@@ -708,15 +788,10 @@ imdb |>
   View()
 
 # filtra generos que seja IGUAL e APENAS "Crime"
-imdb |> filter(generos == "Crime")
-
-# INTERVALO!
-
+imdb |> filter(generos == "Crime") |> View()
 
 
 # mutate ------------------------------------------------------------------
-
-
 
 # mutate(base, nome_da_coluna_para_criar = operacao_que_tem_resultado,
 # nome_da_coluna_para_criar_2 = operacao_que_tem_resultado)
@@ -737,31 +812,49 @@ imdb |>
   mutate(duracao_horas = duracao / 60, .after = duracao) |>
   View()
 
+imdb |>
+  mutate(
+    duracao_horas = duracao/60, .before = pais
+  )
+
 
 imdb |>
   mutate(lucro = receita - orcamento, .after = receita) |>
   View()
 
 
+# o resultado dessa sequencia de operações (pipeline) será salva em lucro_filmes
 lucro_filmes <- imdb |>
+  # removendo filmes que tenham NA em orçamento ou em receita
   drop_na(orcamento, receita) |>
+  # selecionar as colunas titulo, ano, receita e orcamento
   select(titulo, ano, receita, orcamento) |>
   mutate(
+    # vamos criar a coluna lucro, que é o resultado de receita - orçamento
     lucro = receita - orcamento,
+    # verificando se o filme lucrou
     lucrou = lucro > 0,
+    # essas colunas criadas serão adicionas depois da coluna orçamento
     .after = orcamento
   ) |>
+  # ordenando de forma crescente as linhas de acordo com os valores da coluna lucro.
   arrange(lucro)
 
 
 # A função ifelse é uma ótima ferramenta
 # para fazermos classificação binária (2 CATEGORIAS)
 
+idade <- 27
+if(idade < 18){
+  "menor de idade"
+} else {
+  "maior de idade"
+}
+
+
 # if else
 # SE A CONDICAO FOR VERDADEIRA, FACA TAL COISA,
 # SE NAO, FACA OUTRA COISA
-
-
 imdb |>
   mutate(
     lucro = receita - orcamento,
@@ -776,10 +869,10 @@ nota_categorizada <- imdb |>
     categoria_nota = case_when(
       # quando essa condicao for verdadeira ~ salve esse valor,
       nota_imdb >= 8 ~ "Alta",
-      nota_imdb >= 5 & nota_imdb < 8 ~ "Média",
+      nota_imdb >= 5 ~ "Média",
       nota_imdb < 5 ~ "Baixa",
-      .default = "Outros"
-      #  TRUE ~ "CATEGORIZAR" # Em alguns lugares aparece assim
+      # .default = "CATEGORIZAR" # VERSÃO MAIS RECENTE
+      TRUE ~ "CATEGORIZAR" # Em alguns lugares aparece assim pois é a versão mais antiga
     )
   )
 
@@ -789,17 +882,10 @@ nota_categorizada |>
 # classificacao com mais de 2 categorias:
 # usar a função case_when()
 
-imdb |>
-  mutate(
-    categoria_nota = case_when(
-      nota_imdb >= 8 ~ "Alta",
-      nota_imdb < 8 & nota_imdb >= 5 ~ "Média",
-      nota_imdb < 5 ~ "Baixa",
-      TRUE ~ "Não classificado"
-    )
-  ) |>
-  View()
 
+# PRÓXIMA AULA: COMEÇAR COM O EXERCICIO EXTRA DO 3.1
+
+# PRÓXIMA AULA: REVISAR O case_when()
 
 # summarise ---------------------------------------------------------------
 
@@ -977,7 +1063,7 @@ shape_ce_pnud |>
 # tabelas a partir de uma chave.
 # Vamos ver um exemplo bem simples.
 
-band_members 
+band_members
 band_instruments
 
 band_members |>
@@ -1014,7 +1100,7 @@ band_instruments |>
   inner_join(band_members) # só vai aparecer o que tem em comum
 
 
-band_instruments |> 
+band_instruments |>
   anti_join(band_members) # só vai aparecer o que NÃO tem em comum
 
 
