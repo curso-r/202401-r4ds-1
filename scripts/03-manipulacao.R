@@ -883,11 +883,80 @@ nota_categorizada |>
 # usar a função case_when()
 
 
-# PRÓXIMA AULA: COMEÇAR COM O EXERCICIO EXTRA DO 3.1
+# PRÓXIMA AULA: COMEÇAR COM O EXERCICIO EXTRA DO 3.1 - ok
 
-# PRÓXIMA AULA: REVISAR O case_when()
+# PRÓXIMA AULA: REVISAR O case_when() - OK!
+
+# PRÓXIMA AULA: DÚVIDA ELIANA - CONVERTER NA DE UMA COLUNA EM 0 - OK!
+
+# PRÓXIMA AULA: TRABALHO FINAL - OK!
+
+# PRÓXIMA AULA: ESQUISSE - ok 
+
+
+imdb_classe_lucro <- imdb |> 
+  mutate(lucro = receita - orcamento,
+         classe_lucro = case_when(
+           is.na(orcamento) & is.na(receita) ~ "Lucro não calculado: sem informação de receita e orçamento",
+           is.na(orcamento) ~ "Lucro não calculado: sem informação de orçamento",
+           is.na(receita) ~ "Lucro não calculado: sem informação de receita",
+           lucro > 0 ~ "Lucro positivo",
+           lucro < 0 ~ "Prejuízo",
+           TRUE ~ "CATEGORIZAR"
+         ),
+         .after = receita) 
+
 
 # summarise ---------------------------------------------------------------
+
+nota_descritiva <- imdb |> 
+  summarise(
+    # nome_da_coluna_que_queremos_criar = operacao cujo resultado será salvo nessa coluna
+    quantidade_filmes = n(),
+    media_nota = mean(nota_imdb),
+    mediana_nota = median(nota_imdb),
+    variancia_nota = var(nota_imdb),
+    desvio_padrao_nota = sd(nota_imdb),
+    max_nota = max(nota_imdb),
+    min_nota = min(nota_imdb),
+    amplitude = max_nota - min_nota
+  ) 
+
+
+
+imdb_classe_lucro |> 
+  group_by(classe_lucro) |> 
+  summarise(
+    # nome_da_coluna_que_queremos_criar = operacao cujo resultado será salvo nessa coluna
+    quantidade_filmes = n(),
+    media_nota = mean(nota_imdb),
+    mediana_nota = median(nota_imdb),
+    variancia_nota = var(nota_imdb),
+    desvio_padrao_nota = sd(nota_imdb),
+    max_nota = max(nota_imdb),
+    min_nota = min(nota_imdb),
+    amplitude = max_nota - min_nota
+  ) |> View()
+
+
+
+
+
+imdb |> 
+  group_by(producao) |> 
+  summarise(
+    # nome_da_coluna_que_queremos_criar = operacao cujo resultado será salvo nessa coluna
+    quantidade_filmes = n(),
+    media_nota = round(mean(nota_imdb), 2),
+    mediana_nota = median(nota_imdb),
+    variancia_nota = round(var(nota_imdb), 2),
+    desvio_padrao_nota = sd(nota_imdb),
+    max_nota = max(nota_imdb),
+    min_nota = min(nota_imdb),
+    amplitude = max_nota - min_nota
+  ) |> 
+  filter(quantidade_filmes > 0) |> 
+  arrange(desc(quantidade_filmes)) 
 
 
 # summarise(base_de_dados,
@@ -939,6 +1008,15 @@ imdb |> summarise(
   qtd_direcao = n_distinct(direcao)
 )
 
+imdb_classe_lucro |> 
+  summarise(
+    n_grupos = n_distinct(classe_lucro)
+  )
+
+
+
+imdb$direcao
+unique(imdb$direcao) |> length()
 
 # n_distinct() é similar à:
 imdb |>
@@ -946,9 +1024,12 @@ imdb |>
   nrow()
 
 
+
+
+
 # funcoes que transformam -> N valores
 log(1:10)
-sqrt()
+sqrt(1:10)
 str_detect()
 
 # funcoes que sumarizam -> 1 valor - FUNÇÕES BOAS PARA SUMMARISE
@@ -982,9 +1063,31 @@ imdb |>
     media_receita = mean(receita, na.rm = TRUE),
     media_nota = mean(nota_imdb),
     qtd = n(),
-    nome_filmes = paste(titulo, collapse = ", "),
+    nome_filmes = paste(titulo, collapse =", "),
   ) |>
-  arrange(desc(qtd))
+  arrange(desc(qtd)) |> View()
+
+
+
+
+imdb_uma_linha_por_diretor <- imdb |> 
+  separate_longer_delim(direcao, delim = ",") |> 
+  mutate(direcao = str_trim(direcao))
+
+
+imdb_uma_linha_por_diretor |> 
+  group_by(id_filme) |> 
+  mutate(numero_de_linhas = n()) |>
+  View()
+
+imdb_uma_linha_por_diretor |> 
+  group_by(direcao) |> 
+  summarise(
+    qtd_filmes = n(),
+    media_nota = mean(nota_imdb)
+  ) |> 
+  arrange(desc(media_nota)) |> 
+  filter(qtd_filmes > 1)
 
 
 
@@ -1008,11 +1111,11 @@ imdb_tarantino <- imdb |>
 
 imdb_tarantino$titulo
 
-paste(imdb_tarantino$titulo, collapse = "; ")
+paste(imdb_tarantino$titulo, collapse = ", ")
 
+mean(imdb_tarantino$nota_imdb)
 
-
-paste("x", "y")
+paste0("x", "y")
 
 
 
@@ -1035,9 +1138,28 @@ dados_pnud <- pnud_min
 
 # install.packages("geobr")
 library(geobr)
+geobr::list_geobr() |> View()
 shape <- read_municipality("CE")
 glimpse(shape)
 
+
+
+glimpse(dados_pnud)
+
+
+ceara_shape <- shape |> 
+  mutate(muni_id = as.character(code_muni)) |> 
+  left_join(dados_pnud, by = "muni_id") 
+
+
+ceara_shape |> 
+  ggplot() +
+  geom_sf(aes(fill = gini)) +
+  facet_wrap(~ano)
+
+
+
+############
 
 dados_pnud_2010 <- dados_pnud |>
   filter(ano == 2010) |>
