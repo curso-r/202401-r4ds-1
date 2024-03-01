@@ -42,8 +42,20 @@ Fora do horário de aula ou monitoria:
 |:-------------------------------------------------------------------------------------------------------------------------|
 | [01-introducao-ao-R.R](https://curso-r.github.io/202401-r4ds-1/scripts/01-introducao-ao-R.R)                             |
 | [02-importacao.R](https://curso-r.github.io/202401-r4ds-1/scripts/02-importacao.R)                                       |
+| [03-manipulacao-aula-6.R](https://curso-r.github.io/202401-r4ds-1/scripts/03-manipulacao-aula-6.R)                       |
+| [03-manipulacao-de-dados-aula-3.R](https://curso-r.github.io/202401-r4ds-1/scripts/03-manipulacao-de-dados-aula-3.R)     |
+| [03-manipulacao-de-dados-aula-4.R](https://curso-r.github.io/202401-r4ds-1/scripts/03-manipulacao-de-dados-aula-4.R)     |
+| [03-manipulacao-de-dados-aula-5.R](https://curso-r.github.io/202401-r4ds-1/scripts/03-manipulacao-de-dados-aula-5.R)     |
 | [03-manipulacao.R](https://curso-r.github.io/202401-r4ds-1/scripts/03-manipulacao.R)                                     |
 | [04-valores-especiais-e-faltantes.R](https://curso-r.github.io/202401-r4ds-1/scripts/04-valores-especiais-e-faltantes.R) |
+
+## Scripts de dúvidas
+
+| Exemplo                                                                                  |
+|:-----------------------------------------------------------------------------------------|
+| [baixar-e-dezipar.R](https://curso-r.github.io/202401-r4ds-1/duvidas/baixar-e-dezipar.R) |
+| [duvidas-aula-6.R](https://curso-r.github.io/202401-r4ds-1/duvidas/duvidas-aula-6.R)     |
+| [excel-sheets.R](https://curso-r.github.io/202401-r4ds-1/duvidas/excel-sheets.R)         |
 
 ## Exercícios
 

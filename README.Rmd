@@ -74,6 +74,17 @@ Fora do horário de aula ou monitoria:
   knitr::kable()
 ```
 
+## Scripts de dúvidas
+
+```{r}
+"duvidas/" |>
+  fs::dir_ls(fail = FALSE) |>
+  path_to_url() |>
+  dplyr::select(Exemplo = url) |>
+  knitr::kable()
+```
+
+
 ## Exercícios
 
 ```{r}
